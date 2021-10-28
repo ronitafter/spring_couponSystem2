@@ -1,0 +1,95 @@
+
+CompanyService:
+
+deleteCoupon
+getCompanyCoupons
+
+CustomerServies:
+
+getAllCustomerCoupons(int customerId, Coupon coupon)
+getCustomerCoupons(int customerId, Category category)
+
+
+CouponRepository ?
+
+________________________Spring – CrudRepository________________________
+
+CrudRepository - Spring Boot provides an interface called CrudRepository 
+that contains methods for CRUD operations. It is defined in the package
+ org.springframework. It extends the Spring Data Repository interface.
+
+
+save() - Saves a given entity. Use the returned instance 
+for further operations as the save operation might have
+ changed the entity instance completely.
+
+
+Main:
+
+@SpringBootApplication
+ApplicationContext context = SpringApplication.run(Main.class);
+XRepository xrepository = context.getBean(XRepository.class);
+xrepository.save(new BeanName("", 0, , null));
+BeanName beanname = new BeanName("", 0, null)
+
+________________________Spring Boot Architecture________________________
+
+Spring Boot follows a layered architecture in which *each layer communicates
+with the layer directly below or above (hierarchical structure) it*.
+
+There are four layers in Spring Boot:
+
+Presentation Layer - handles the HTTP requests, translates the JSON parameter 
+to object, and authenticates the request and transfer it to the business layer. 
+
+Business Layer - handles all the business logic. It consists of service classes
+and uses services provided by data access layers. It also performs authorization
+and validation.
+
+Persistence Layer - contains all the storage logic and translates business objects
+from and to database rows.
+
+Database Layer - In the database layer, CRUD (create, retrieve, update, delete) 
+operations are performed.
+
+___________________
+[Controller] calls [Service(s)] who calls [repository(ies)]
+
+Views <- Controllers -> Service layer -> Repository layer -> EF -> SQL Server
+
+___________________Service layer - 
+ * exposes business logic, which uses repository. 
+* allows one or more presentation implementations to access
+your business logic through a common interface.  
+* encapsulate business logic into a single place to promote
+code reuse and separations of concerns. 
+* The service layer is the API to your data. a website would call a method in your service -
+Your service would call your repository for getting that data -
+ then your service would transform it - then pass that back up to the website.
+ 
+*Provides separation of concern- provides code modularity,
+the business logic and rules are specified in the service layer( DAO layer).
+it is then only responsible for interacting with DB. 
+
+
+___________________Repository Layer - 
+
+@Repository’s job is to catch persistence-specific exceptions
+and re-throw them as one of Spring’s unified unchecked exceptions.
+PersistenceExceptionTranslationPostProcessor, 
+* gives you additional level of abstraction over data access. 
+* exposes basic CRUD operations.
+* A Repository is a data access pattern, in which data transfer objects are passed
+into a repository object that manages CRUD operations.
+* the Repository is meant for directly accessing the database. 
+This is where direct calls to the stored procedures will be.
+
+___________________Persistence Layers -
+There are three options available to support data persistence:
+ JPA Entities (Active Record style)
+ JPA Repositories
+ MongoDB Repositories.
+ 
+ 
+ 
+
