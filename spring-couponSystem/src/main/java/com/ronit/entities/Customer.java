@@ -5,11 +5,16 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "customer")
 public class Customer {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@Column(name = "first_name")
 	private String firstName;
@@ -17,6 +22,7 @@ public class Customer {
 	private String lastName;
 	private String email;
 	private String password;
+	
 	private List<Coupon> coupons;
 //	private Coupon coupon;
 
