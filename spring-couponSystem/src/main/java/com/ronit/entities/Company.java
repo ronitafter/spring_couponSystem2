@@ -44,11 +44,11 @@ public class Company {
 		this.coupons = coupons;
 	}
 
-	public int getCompanyID() {
+	public int getId() {
 		return id;
 	}
 
-	public void setCompanyID(int id) {
+	public void seId(int id) {
 		this.id = id;
 	}
 
@@ -93,7 +93,7 @@ public class Company {
 
 	@Override
 	public String toString() {
-		return "Company [CompanyID=" + id + ", name=" + name + ", email=" + email + ", password=" + password
+		return "Company [id =" + id + ", name=" + name + ", email=" + email + ", password=" + password
 				+ ", coupons=" + coupons + "]";
 	}
 }

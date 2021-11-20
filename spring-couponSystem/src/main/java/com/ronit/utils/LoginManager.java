@@ -1,8 +1,7 @@
 package com.ronit.utils;
 
-import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.ronit.enums.ClientType;
@@ -10,48 +9,35 @@ import com.ronit.exceptions.CouponSystemException;
 import com.ronit.services.AdminService;
 import com.ronit.services.ClientService;
 import com.ronit.services.CompanyService;
-import com.ronit.services.CustomerServies;
+import com.ronit.services.CustomerServie;
 
 @Component
 public class LoginManager {
 	
-//	@Autowired
-//	private ApplicationContext applicationcontext;
+	@Autowired
+	private ApplicationContext context;
  // clientService = applicationcontext.getBean(adminService.classe)
-	@Autowired
-	private CompanyService companyService;
-	@Autowired
-	private CustomerServies customerServies;
-	@Autowired
-	private AdminService adminService;
+	
 
 	public ClientService login(String email, String passwaord, ClientType clientType) throws CouponSystemException {
 		ClientService clientService = null;
 		switch (clientType) {
 		case COMPANY:
-			if (this.companyService.login(email, passwaord)) {
-				return companyService;
-			} else {
-				throw new CouponSystemException("login as company failed");
-			}
+			 clientService = context.getBean(CompanyService.class);
+			 break;
 		case CUSTOMER:
-			if (this.customerServies.login(email, passwaord)) {
-				return customerServies;
-			} else {
-				throw new CouponSystemException("login as CUSTOMER failed");
-			}
+			clientService = context.getBean(CustomerServie.class);
+			break;
 		case ADMINISTRATOR:
-			if (this.adminService.login(email, passwaord)) {
-				return adminService;
-			} else {
-				throw new CouponSystemException("login as ADMINISTRATOR failed");
-			}
-
-		default:
+			clientService = context.getBean(AdminService.class);
 			break;
 		}
 
-		return clientService;
+		if (clientService.login(email, passwaord)) {
+			return clientService;
+		} else {
+			throw new CouponSystemException("login as company failed");
+		}
 	}
 
 }

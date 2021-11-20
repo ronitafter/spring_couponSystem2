@@ -3,15 +3,20 @@ package com.ronit.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "customer")
+@Table(name = "customers")
 public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +27,11 @@ public class Customer {
 	private String lastName;
 	private String email;
 	private String password;
-	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
+	@JoinTable(name = "coupons_customers", // name of join table
+			joinColumns = @JoinColumn(name = "customer_id"), // join table FK column for current entity
+			inverseJoinColumns = @JoinColumn(name = "coupon_id")) // join table FK column for inverse entity
 	private List<Coupon> coupons;
 //	private Coupon coupon;
 

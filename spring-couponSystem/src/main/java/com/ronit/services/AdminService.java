@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,11 @@ import com.ronit.repositories.CustomerRepository;
 @Service
 @Scope("prototype")
 public class AdminService extends ClientService {
+	
+	@Value("${admin.email}")
+	private String email;
+	@Value("${admin.password}")
+	private String password;
 
 	@Autowired
 	public AdminService(CompanyRepository companyrepository, CouponRepository couponrepository,
@@ -28,13 +34,17 @@ public class AdminService extends ClientService {
 	}
 
 	public boolean login(String email, String passwaord) {
-		return companyrepository.ExistsByEmailAndPassword(email, passwaord);
+		System.out.println(this.email);
+		System.out.println(this.password);
+		boolean b = email.equals(this.email) && passwaord.equals(this.password);
+		return b;
 	}
 
 	// Company
 	public void addCompany(Company company) throws CouponSystemException {
 //		Optional<Company> opt = this.
 		if (companyrepository.existsByNameAndEmail(company.getName(), company.getEmail())) {
+			// ompanyrepository.ExistsByNameOrEmail(company.getName(), company.getEmail()))
 			throw new CouponSystemException("addCompany faild - company with this name and email already exist ");
 
 		} else {
@@ -45,7 +55,7 @@ public class AdminService extends ClientService {
 	}
 
 	public void updateCompany(Company company) throws CouponSystemException {
-		Optional<Company> opt = this.companyrepository.findById(company.getCompanyID());
+		Optional<Company> opt = this.companyrepository.findById(company.getId());
 		if (opt.isPresent()) {
 			Company companyFromDB = opt.get();
 			companyFromDB.setEmail(company.getEmail());
@@ -80,7 +90,7 @@ public class AdminService extends ClientService {
 	}
 
 	public void addCustomer(Customer customer) throws CouponSystemException {
-		if (this.customerRepository.ExistsByFirstNameAndLastNameAndEmail(customer.getFirstName(),
+		if (this.customerRepository.existsByFirstNameAndLastNameAndEmail(customer.getFirstName(),
 				customer.getLastName(), customer.getEmail())) {
 			throw new CouponSystemException("addCustomer faild - company with this name and email already exist ");
 		}

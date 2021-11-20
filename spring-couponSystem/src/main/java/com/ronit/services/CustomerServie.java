@@ -1,6 +1,7 @@
 package com.ronit.services;
 
 import java.util.ArrayList;
+
 import java.util.Date;
 
 import java.util.List;
@@ -20,7 +21,7 @@ import com.ronit.repositories.CustomerRepository;
 import jdk.jfr.DataAmount;
 
 @Service
-public class CustomerServies extends ClientService {
+public class CustomerServie extends ClientService {
 
 	private CouponRepository couponrepository;
 	private CustomerRepository customerrepository;
@@ -28,10 +29,9 @@ public class CustomerServies extends ClientService {
 	Coupon coupon = null;
 
 	// login
-	@Autowired
 	public boolean login(String email, String passwaord) {
-		if (customerrepository.ExistsByEmailAndPassword(email, passwaord)) {
-			Customer customer = customerrepository.FindByEmailAndPassword(email, passwaord);
+		if (customerrepository.existsByEmailAndPassword(email, passwaord)) {
+			Customer customer = customerrepository.findByEmailAndPassword(email, passwaord);
 			id = customer.getId();
 			return true;
 		}
@@ -42,7 +42,7 @@ public class CustomerServies extends ClientService {
 	}
 
 	@Autowired
-	public CustomerServies(CouponRepository couponrepository, CustomerRepository customerrepository) {
+	public CustomerServie(CouponRepository couponrepository, CustomerRepository customerrepository) {
 		this.couponrepository = couponrepository;
 		this.customerrepository = customerrepository;
 
@@ -70,33 +70,33 @@ public class CustomerServies extends ClientService {
 
 //	int couponID, Coupon coupon		
 	public List<Coupon> getAllCustomerCoupons(int customerId) throws CouponSystemException {
-		if (couponrepository.findAllCustomerCoupons(customerId).isEmpty()) {
+		if (couponrepository.findByCustomersId(customerId).isEmpty()) {
 			throw new CouponSystemException(
 					"getAllCustomerCoupons faild - Coupons not found in this category for this customer");
 
 		} else {
-			return new ArrayList<Coupon>(couponrepository.findAllCustomerCoupons(customerId));
+			return new ArrayList<Coupon>(couponrepository.findByCustomersId(customerId));
 
 		}
 
 	}
 
 	public List<Coupon> getCustomerCoupons(int customerId, Category category) throws CouponSystemException {
-		if (couponrepository.findByCustomerIdAndCategory(customerId, category).isEmpty()) {
+		if (couponrepository.findByCompanyIdAndCategory(customerId, category).isEmpty()) {
 			throw new CouponSystemException(
 					"getCustomerCoupons faild - Coupons not found in this category for this customer");
 		} else {
 
-			return new ArrayList<Coupon>(couponrepository.findByCustomerIdAndCategory(customerId, category));
+			return new ArrayList<Coupon>(couponrepository.findByCompanyIdAndCategory(customerId, category));
 		}
 
 	}
 
 	public List<Coupon> getCustomerCoupons(int customerId, int maxPrice) throws CouponSystemException {
-		if (couponrepository.findCouponsByCustomerIdAndPrice(customerId, maxPrice).isEmpty()) {
+		if (couponrepository.findCouponsByCustomersIdAndPrice(customerId, maxPrice).isEmpty()) {
 			throw new CouponSystemException("getCustomerCoupons faild - customerId not found");
 		} else {
-			return new ArrayList<Coupon>(couponrepository.findCouponsByCustomerIdAndPrice(customerId, maxPrice));
+			return new ArrayList<Coupon>(couponrepository.findCouponsByCustomersIdAndPrice(customerId, maxPrice));
 		}
 	}
 

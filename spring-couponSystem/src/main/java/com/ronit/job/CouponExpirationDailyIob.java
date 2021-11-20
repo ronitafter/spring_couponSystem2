@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.ronit.repositories.CouponRepository;
 
-@Component
+//@Component
 @Scope("singleton")
 public class CouponExpirationDailyIob implements Runnable {
 	private Thread thread;

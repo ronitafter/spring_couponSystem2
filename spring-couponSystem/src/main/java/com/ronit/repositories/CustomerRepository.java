@@ -11,14 +11,12 @@ import com.ronit.entities.Customer;
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
 //	/ 	List <Coupon> findAllCustomerCoupons(int customerId, int couponID);
-	boolean ExistsByEmailAndPassword(String email, String password);
-	Customer FindByEmailAndPassword(String email, String password);
+	boolean existsByEmailAndPassword(String email, String password);
+	Customer findByEmailAndPassword(String email, String password);
 //
-	boolean ExistsByFirstNameAndLastNameAndEmail(String firstName, String lastName, String email);
-//
-	boolean ExistsByNameAndEmail(String name, String email);
+	boolean existsByFirstNameAndLastNameAndEmail(String firstName, String lastName, String email);
 	//
-	Company findByNameAndEmail(String name, String email);
+	Company findByFirstNameAndLastNameAndEmail(String firstName, String lastName, String email);
 
 	
 

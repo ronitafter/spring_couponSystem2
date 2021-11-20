@@ -25,7 +25,7 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
 
 	@Modifying
 	@Transactional
-	@Query(value = "delete from coupon where end_date<now()", nativeQuery = true)
+	@Query(value = "delete from coupons where end_date<now()", nativeQuery = true)
 //	@Query(value = "delete from Coupon c where c.endDate < now()")
 	void deleteExpiredCoupons();
 
@@ -40,6 +40,10 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
 	
 	// ?
 	List<Coupon> findCouponsByCompanyId(int companyId);
+	// findCouponsByCompanyIdAndCouponId
+    @Query("from Coupon as c where c.company.id = :companyId and c.id = :couponId")
+	List<Coupon> findCouponsByCompanyIdAndCouponId(int companyId, int couponId);
+
 	// void deletCompanyCoupons(int companyID)
 	// find all company coupons
 //List<Coupon> findAllCompanyCoupons(int CompanyID, int couponId);
@@ -47,22 +51,25 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
 	// ************************ Customer ************************
 	// find coupon by date
 	boolean findByEndDate(LocalTime time);
-	boolean findBetweenDates(Date startDate, Date endDate);
+	boolean findByStartDateAfterAndEndDateBefore(Date startDate, Date endDate);
+//	boolean findByStartDateAfterAndEndDateBefore(Date startDate, Date endDate);
 
 
 	// ?
 	@Query(value = "select coupon. * from coupons join customers_coupons on"
 			+ "coupon.id=customers_coupons.coupon_id where customer_id=id and maxPrice<=price", nativeQuery = true)
-	List<Coupon> findCouponsByCustomerIdAndPrice(int customerId, int maxPrice);	
+	List<Coupon> findCouponsByCustomersIdAndPrice(int customerId, int maxPrice);	
 	// get Customer Coupons by customerID and couponID
 	@Query(value = "select coupon. * from coupons join customers_coupons on"
-			+ "coupon.id=customers_coupons.coupon_id where customer_id=id and category_id=categpryId", nativeQuery = true)
-	List<Coupon> getCustomerCoupons(@Param("customerId") int customerId, @Param("categoryId") int categoryId);
+			+ "coupon.id=customers_coupons.coupon_id where customer_id=id and category_id=categoryId", nativeQuery = true)
+	List<Coupon> getCustomersCoupons(@Param("customerId") int customerId, @Param("categoryId") int categoryId);
+	
+	
 	
 	// 
-	List<Coupon> findByCustomerIdAndCategory(int customerId, Category category);
+	List<Coupon> findByCustomersIdAndCategory(int customerId, Category category);
 	// Coupon coupon
-	List<Coupon> findAllCustomerCoupons(int customerId);
+	List<Coupon> findByCustomersId(int customerId);
 // find Customer Coupon by customerID and couponID
 // void deletCouponPurchase(int customerID, int couponID) throws
 // deletCouponPurchaseOfCustomer(int customerID) 

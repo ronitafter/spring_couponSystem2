@@ -1,15 +1,19 @@
 package com.ronit.entities;
 
 import java.sql.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -17,9 +21,11 @@ import javax.persistence.Table;
 import com.ronit.enums.Category;
 
 @Entity
-@Table(name = "coupon")	
+@Table(name = "coupons")
 public class Coupon {
-	
+	// @Table(name = "coupon")
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -33,12 +39,17 @@ public class Coupon {
 	private String description;
 	@Column(name = "start_date")
 	private Date startDate;
-	// 	@Column(name = "start_date")
+	@Column(name = "end_date")
 	private Date endDate;
 	private int amount;
 	private double price;
 	private String image;
-
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
+	@JoinTable(name = "coupons_customers", // name of join table
+			joinColumns = @JoinColumn(name = "coupon_id"), // join table FK column for current entity
+			inverseJoinColumns = @JoinColumn(name = "customer_id")) // join table FK column for inverse entity
+	private List<Customer> customers;
 	public Coupon() {
 	}
 
@@ -59,8 +70,8 @@ public class Coupon {
 		this.image = image;
 	}
 
-	public Coupon(Company company, Category category, String title, String description, Date start_date, Date end_date,
-		int amount, double price, String image) {
+	public Coupon(Company company, Category category, String title, String description, Date startDate, Date endDate,
+			int amount, double price, String image) {
 		this.company = company;
 		this.category = category;
 		this.title = title;
@@ -72,15 +83,15 @@ public class Coupon {
 		this.image = image;
 	}
 
-	public Coupon(int id, Company company, Category category, String title, String description, int amount, double price,
-			String image, Date endDate, Date start_date) {
+	public Coupon(int id, Company company, Category category, String title, String description, int amount,
+			double price, String image, Date endDate, Date startDate) {
 		super();
 		this.id = id;
 		this.company = company;
 		this.category = category;
 		this.title = title;
 		this.description = description;
-		this.startDate = start_date;
+		this.startDate = startDate;
 		this.endDate = endDate;
 		this.amount = amount;
 		this.price = price;
@@ -94,8 +105,6 @@ public class Coupon {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	
 
 	public Company getCompany() {
 		return company;
@@ -129,19 +138,19 @@ public class Coupon {
 		this.description = description;
 	}
 
-	public Date getStart_date() {
+	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStart_date(Date startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEnd_date() {
+	public Date getEndDate() {
 		return endDate;
 	}
 
-	public void setEnd_date(Date endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
@@ -172,10 +181,8 @@ public class Coupon {
 	@Override
 	public String toString() {
 		return "Coupon [id=" + id + ", category=" + category + ", title=" + title + ", description=" + description
-				+ ", start_date=" + startDate + ", end_date=" + endDate + ", amount=" + amount + ", price=" + price
+				+ ", startDate=" + startDate + ", endDate=" + endDate + ", amount=" + amount + ", price=" + price
 				+ ", image=" + image + "]";
 	}
-
-	
 
 }
