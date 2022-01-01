@@ -14,15 +14,12 @@ import com.ronit.enums.Category;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Integer> {
-
 	// find companies by email and password
-//	boolean isCompanyExistsByEmailAndPassword(String email, String password);
  	boolean existsByEmailAndPassword(String email, String password);
  	Company findByEmailAndPassword(String email, String password);	
  	// find companies by name and email
 	boolean existsByNameAndEmail(String name, String email);
-	Company findByNameAndEmail(String name, String email);
-	
+	Company findByNameAndEmail(String name, String email);	
 	boolean existsByNameOrEmail(String name, String email);
 
 

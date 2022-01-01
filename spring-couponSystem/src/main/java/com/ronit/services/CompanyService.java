@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -19,24 +19,21 @@ import com.ronit.exceptions.CouponSystemException;
 
 @Service
 @Scope("prototype")
-@Transactional
+@Transactional(rollbackFor = CouponSystemException.class)
 public class CompanyService extends ClientService {
 
 	private int companyId;
-
+// -------------------------- login -----------------------------------------
 	public boolean login(String email, String passwaord) {
 		if (companyrepository.existsByEmailAndPassword(email, passwaord)) {
-			Company company = companyrepository.findByEmailAndPassword(passwaord, passwaord);
-			//			Company company = companyrepository.FindByEmailAndPassword(passwaord, passwaord).getId();
+			Company company = companyrepository.findByEmailAndPassword(email, passwaord);
 			companyId = company.getId();
 			return true;
 		}
 		return false;
-//		return companyrepository.isCompanyExistsByEmailAndPassword(email, passwaord);
 
 	}
-
-//	public int addCoupon(Company company, Coupon coupon) {	
+// -------------------------- addCoupon -----------------------------------------
 	public void addCoupon(Coupon coupon) throws CouponSystemException {
 		if (this.couponrepository.existsByCompanyIdAndTitle(companyId, coupon.getTitle())) {
 			throw new CouponSystemException("addCoupon faild - coupon already exist for this company ");
@@ -46,18 +43,13 @@ public class CompanyService extends ClientService {
 		company.addCoupon(coupon);
 
 	}
-
-	public void UpdateCoupon(int companyId, Coupon coupon) throws CouponSystemException {
+// -------------------------- UpdateCoupon -----------------------------------------
+	public void UpdateCoupon(Coupon coupon) throws CouponSystemException {
 		Optional<Coupon> opt = this.couponrepository.findById(coupon.getId());
 		if (opt.isEmpty()) {
 			throw new CouponSystemException("UpdateCoupon faild - coupon not found");
 		}
-
 		Coupon couponFromDb = opt.get();
-		if (couponFromDb.getId() != companyId) {
-			throw new CouponSystemException("UpdateCoupon faild - coupon not belong to this company");
-		}
-
 		couponFromDb.setAmount(coupon.getAmount());
 		couponFromDb.setCategory(coupon.getCategory());
 		couponFromDb.setDescription(coupon.getDescription());
@@ -68,40 +60,39 @@ public class CompanyService extends ClientService {
 		couponFromDb.setTitle(coupon.getTitle());
 
 	}
-
-	public void deleteCoupon( Coupon coupon) throws CouponSystemException {
-		Optional<Coupon> opt = this.couponrepository.findById(coupon.getId());
+// -------------------------- deleteCoupon -----------------------------------------
+	public void deleteCoupon(int couponId, int companyId) throws CouponSystemException {
+		Optional<Coupon> opt = this.couponrepository.findById(couponId);
 		if (opt.isEmpty()) {
 			throw new CouponSystemException("deleteCoupon faild - coupon not found");
 		}
 		Coupon couponFromDb = opt.get();
-		if (couponFromDb.getId() != companyId) {
-			throw new CouponSystemException("deleteCoupon faild - coupon not belong to this company");
+		if (!couponrepository.existsByIdAndCompanyId(couponId, companyId)) {
+			throw new CouponSystemException("eleteCoupon faild - coupon not belong to this company");
 		}
-
-		couponrepository.deleteById(coupon.getId());
-		// couponrepository.delete(coupon);
+		couponrepository.deleteById(couponId);
+		System.out.println("coupon deleted");
+		System.out.println(couponrepository.findById(couponId));
 
 	}
-
-	public List<Coupon> getCompanyCoupons(Category category) throws CouponSystemException {
-		if (couponrepository.findByCompanyIdAndCategory(companyId, category).isEmpty()) {
+// -------------------------- getCompanyCoupons -----------------------------------------
+	public List<Coupon> getCompanyCoupons(int categoryId) throws CouponSystemException {
+		if (couponrepository.findByCompanyIdAndCategory(companyId, categoryId).isEmpty()) {
 			throw new CouponSystemException(
 					"getCompanyCoupons faild - Coupons not found in this category for this company");
 		} else {
-			return new ArrayList<Coupon>(couponrepository.findByCompanyIdAndCategory(companyId, category));
+			return new ArrayList<Coupon>(couponrepository.findByCompanyIdAndCategory(companyId, categoryId));
 		}
 	}
-
-	public List<Coupon> getCompanyCoupons(double maxPrice) throws CouponSystemException {
+// -------------------------- getCompanyCouponsByPrice -----------------------------------------
+	public List<Coupon> getCompanyCouponsByPrice(double maxPrice) throws CouponSystemException {
 		if (couponrepository.findByCompanyIdAndPrice(companyId, maxPrice).isEmpty()) {
 			throw new CouponSystemException("getCompanyCoupons faild - company not found");
 		} else {
 			return new ArrayList<Coupon>(couponrepository.findByCompanyIdAndPrice(companyId, maxPrice));
 		}
 	}
-
-//	public Optional<Coupon> getAllCompanyCoupons(int companyId, int couponId) {
+// -------------------------- getAllCompanyCoupons -----------------------------------------
 	public List<Coupon> getAllCompanyCoupons() throws CouponSystemException {
 		if (couponrepository.findCouponsByCompanyId(companyId).isEmpty()) {
 			throw new CouponSystemException("getAllCompanyCoupons faild - no coupons found for this company");
@@ -111,7 +102,7 @@ public class CompanyService extends ClientService {
 		}
 		return new ArrayList<Coupon>(couponrepository.findCouponsByCompanyId(companyId));
 	}
-	
+// -------------------------- getCompanyDetails -----------------------------------------
 	public Company getCompanyDetails(int comanyId) throws CouponSystemException {
 		Optional<Company> opt = this.companyrepository.findById(comanyId);
 		if (opt.isEmpty()) {

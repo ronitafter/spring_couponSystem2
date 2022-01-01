@@ -27,36 +27,49 @@ public class Customer {
 	private String lastName;
 	private String email;
 	private String password;
-	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-			CascadeType.REFRESH })
-	@JoinTable(name = "coupons_customers", // name of join table
-			joinColumns = @JoinColumn(name = "customer_id"), // join table FK column for current entity
-			inverseJoinColumns = @JoinColumn(name = "coupon_id")) // join table FK column for inverse entity
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH
+			,CascadeType.PERSIST})
+	@JoinTable(name = "coupons_customers", 
+			joinColumns = @JoinColumn(name = "customer_id"), 
+			inverseJoinColumns = @JoinColumn(name = "coupon_id"))
 	private List<Coupon> coupons;
-//	private Coupon coupon;
 
 	public Customer() {
 
 	}
-
-	public Customer(int id, String first_name, String last_name, String email, String password) {
-		super();
-		this.id = id;
-		this.firstName = first_name;
-		this.lastName = last_name;
+	
+	public Customer(String firstName, String lastName, String email, String password) {
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
 	}
 
-	public Customer(int id, String first_name, String last_name, String email, String password, List<Coupon> coupons) {
-		super();
-		this.id = id;
-		this.firstName = first_name;
-		this.lastName = last_name;
+	public Customer(String firstName, String lastName, String email, String password, List<Coupon> coupons) {
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
 		this.coupons = coupons;
 	}
+	
+	public Customer(int id, String firstName, String lastName, String email, String password) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+	}
+	public Customer(int id, String first_name, String lastName, String email, String password, List<Coupon> coupons) {
+		this.id = id;
+		this.firstName = first_name;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+		this.coupons = coupons;
+	}
+	
+
 
 	public int getId() {
 		return id;
@@ -70,16 +83,16 @@ public class Customer {
 		return firstName;
 	}
 
-	public void setFirst_name(String first_name) {
-		this.firstName = first_name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 	public String getLastName() {
 		return lastName;
 	}
 
-	public void setLast_name(String last_name) {
-		this.lastName = last_name;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -111,12 +124,14 @@ public class Customer {
 			this.coupons = new ArrayList<Coupon>();
 		}
 		this.coupons.add(coupon);
-	}
+		}
+
 
 	@Override
 	public String toString() {
 		return "Customers [id=" + id + ", first_name=" + firstName + ", last_name=" + lastName + ", email=" + email
-				+ ", password=" + password + ", coupons=" + coupons + "]";
+				+ ", password=" + password + "]";
+
 	}
 
 }

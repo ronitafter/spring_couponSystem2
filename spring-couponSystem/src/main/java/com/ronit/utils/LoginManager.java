@@ -36,7 +36,7 @@ public class LoginManager {
 		if (clientService.login(email, passwaord)) {
 			return clientService;
 		} else {
-			throw new CouponSystemException("login as company failed");
+			throw new CouponSystemException("login failed");
 		}
 	}
 
